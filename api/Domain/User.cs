@@ -1,12 +1,10 @@
-public class User
+namespace common.Domain
 {
-    public string? Name { get; set; }
-    public string? Email { get; set; }
-    public string? Password { get; set; }
-
-    /*public User(string email, string password)
+    public class User
     {
-        Email = email;
-        Password = password;
-    }*/
+        public int Id { get; set; }
+        public string? Name { get; set; }
+        public string? Email { get; set; }
+        public string? Password { get; set; }
+    }
 }

@@ -1,6 +1,7 @@
-using api.Domain;
-using api.Services;
+using System.Net;
+using common.Domain;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
@@ -10,8 +11,10 @@ namespace api.Controllers
     {
         private readonly ILogger<UserController> _logger;
 
-        public UserController(ILogger<UserController> logger)
+        private readonly UserDb _context;
+        public UserController(UserDb context, ILogger<UserController> logger)
         {
+            _context = context;
             _logger = logger;
         }
 
@@ -26,9 +29,29 @@ namespace api.Controllers
         }
 
         [HttpPost(Name = "CreateUser")]
-        public void Post(User user)
+        public async Task<IActionResult> Post(User user)
         {
             System.Console.WriteLine($"Just got the user {user.Email} through");
+
+            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == user.Email);
+
+            if(existingUser != null)
+            {
+                return BadRequest($"User already exists {user.Email}");
+            }
+            System.Console.WriteLine($"Adding user {user.Email}");
+
+            // TODO: Hash the password here
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+                    
+                
+
+            /* TODO: Check the user doesnt exist
+            *  Add the user to the user database
+            */ 
+
+            return new OkResult();
         }
     }
 }
