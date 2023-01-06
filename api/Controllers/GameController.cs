@@ -1,4 +1,5 @@
 using api.Services;
+using common.Domain;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -9,29 +10,28 @@ namespace api.Controllers
     {
         private readonly ILogger<GameController> _logger;
 
-        /*private readonly UserDb _context;*/
-        public GameController(/*UserDb context,*/ ILogger<GameController> logger)
+        private readonly GameDb _context;
+        public GameController(GameDb context, ILogger<GameController> logger)
         {
-            /*_context = context;*/
+            _context = context;
             _logger = logger;
         }
         
         [HttpPost(Name = "NewGame")]
-        public ActionResult Post(NewGame newGame)
+        public async Task<ActionResult> Post(NewGame newGame)
         {
+            newGame.UserId = 1; 
             System.Console.WriteLine($"Just got new game for user {newGame.UserId} through");
 
             var gameEngine = new GameEngine();
-            var game = gameEngine.CreateGame(newGame.NumberOfBots);
+            var game = gameEngine.CreateGame(newGame);
+
+            System.Console.WriteLine($"Game player hand {game.Player.Hand1 == null}");
+
+            _context.Games.Add(game);
+            await _context.SaveChangesAsync();
 
             return new OkObjectResult(game);
-        }
-
-        
-        public class NewGame
-        {
-            public int UserId { get; set; }
-            public int NumberOfBots { get; set; }
-        }
+        }                
     }
 }

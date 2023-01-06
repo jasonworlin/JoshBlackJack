@@ -32,7 +32,7 @@ namespace api.Controllers
         {
             var gameEngine = new GameEngine();
             
-            game.Player.Sticking();
+            //game.Player.Sticking();
 
             return new OkObjectResult(game);
         }        

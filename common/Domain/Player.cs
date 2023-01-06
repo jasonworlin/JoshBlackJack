@@ -5,9 +5,7 @@ namespace common.Domain;
 public class Player
 {
     public int PlayerId { get; set; }
-    public string? Name { get; set; }
-    public string? Email { get; set; }
-    public string? Password { get; set; }
+    public int UserId { get; set; }
 
     //[JsonIgnore]
     public decimal Balance { get; set; }
@@ -27,17 +25,17 @@ public class Player
 
     public Player()
     {
+        System.Console.WriteLine("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
         _total = 0;
         _activeHand = ActiveHand.Hand1;
         Hand1 = new Hand();
         Hand2 = new Hand();
     }
 
-    public Player(string? name, string? email, string? password) : base()
+    public Player(int userId) : this()
     {
-        Name = name;
-        Email = email;
-        Password = password;
+        System.Console.WriteLine("********************************************");
+        UserId = userId;            
     }
 
     public bool HasBusted { get; set; }
@@ -117,7 +115,7 @@ public class Player
     private void Split()
     {
         //HasSplit = true;
-        Hand2 = new Hand();
+        //Hand2 = new Hand();
         Hand2.Cards.Add(Hand1.Cards[0]);
         Hand1.Cards.RemoveAt(0);
     }
@@ -172,5 +170,5 @@ public class Player
             System.Console.WriteLine("Player won");
             HasWon = true;
         }
-    }    
+    }
 }

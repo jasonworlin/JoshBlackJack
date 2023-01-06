@@ -14,6 +14,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDbContext<GameDb>(options =>
 options.UseSqlite(builder.Configuration.GetConnectionString("BlackJackSQLite")));
 
+builder.Services.AddDbContext<UserDb>(options =>
+options.UseSqlite(builder.Configuration.GetConnectionString("BlackJackSQLite")));
+
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();

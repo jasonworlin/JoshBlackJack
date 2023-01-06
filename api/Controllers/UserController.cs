@@ -11,19 +11,19 @@ namespace api.Controllers
     {
         private readonly ILogger<UserController> _logger;
 
-        private readonly GameDb _context;
-        public UserController(GameDb context, ILogger<UserController> logger)
+        private readonly UserDb _context;
+        public UserController(UserDb context, ILogger<UserController> logger)
         {
             _context = context;
             _logger = logger;
         }
 
         [HttpGet(Name = "GetUser")]
-        public ActionResult<Player> Get(int id)
+        public ActionResult<User> Get(int id)
         {
             System.Console.WriteLine("Getting a user");
 
-            return new Player{
+            return new User{
                 Email = "email", Name = "myname", Password = "mypassword"
             };
         }
@@ -31,22 +31,22 @@ namespace api.Controllers
         [HttpPost(Name = "CreateUser")]
         public async Task<IActionResult> Post(User user)        
         {
-            var player = new Player(user.Name, user.Email, user.Password);
-            System.Console.WriteLine($"Just got the user {player.Email} through");
+            //var player = new Player(user.Name, user.Email, user.Password);
+            //System.Console.WriteLine($"Just got the user {player.Email} through");
 
-            var existingUser = await _context.Players.FirstOrDefaultAsync(u => u.Email == player.Email);
+            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == user.Email);
 
             if(existingUser != null)
             {
-                return BadRequest($"User already exists {player.Email}");
+                return BadRequest($"User already exists {user.Email}");
             }
-            System.Console.WriteLine($"Adding user {player.Email}");
+            System.Console.WriteLine($"Adding user {user.Email}");
 
             // Default starting balance of 100
-            player.Balance = 100;
+            user.Balance = 100;
 
             // TODO: Hash the password here
-            _context.Players.Add(player);
+            _context.Users.Add(user);
             await _context.SaveChangesAsync();
                     
                 

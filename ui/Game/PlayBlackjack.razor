@@ -18,7 +18,7 @@
         <button>Create Game</button>
     </div>
     <ul>
-        @if (Game.Dealer.Hand.Count() > 0)
+        @if (Game.Dealer.Hand.Cards.Count() > 0)
         {
             @foreach (var bot in Game.Bots)
             {
@@ -80,14 +80,14 @@
             
             @if(ShowDealerCard)
             {
-                foreach (var card in Game.Dealer.Hand)
+                foreach (var card in Game.Dealer.Hand.Cards)
                 {
                     <div>@card.Value</div>
                 }
             }
             else
             {
-                <div>@Game.Dealer.Hand[0].Value</div>
+                <div>@Game.Dealer.Hand.Cards[0].Value</div>
                 <div>X</div>    
             }
             

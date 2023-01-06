@@ -5,12 +5,12 @@
         public int DealerId { get; set; }
         public int Total{ get; private set;}
 
-        public List<Card> Hand { get; set; }
+        public Hand Hand { get; set; }
 
         public Dealer()
         {
             Total = 0;
-            Hand = new List<Card>();
+            Hand = new Hand();
         }
 
         public bool HasBusted { get; set; }
@@ -21,7 +21,7 @@
         {
             //System.Console.WriteLine($"Dealer PRE TOTAL {Total}");
 
-            Total = Hand.Sum(card => card.Value);
+            Total = Hand.Cards.Sum(card => card.Value);
             Total += card.Value;
 
             //System.Console.WriteLine($"Dealer POST TOTAL {Total}");
@@ -31,12 +31,12 @@
                 System.Console.WriteLine($"BUSTED");
                 HasBusted = true;
 
-                Hand.Add(card);
+                Hand.Cards.Add(card);
 
                 return;
             }
 
-            Hand.Add(card);
+            Hand.Cards.Add(card);
         }
 
         public void PlayHand(Game game)
@@ -46,10 +46,10 @@
                 if (HasBusted || HasStuck)
                     break;
 
-                if (IsHitting())
+                /*if (IsHitting())
                     ReceiveCard(game.Deck.GetNextCard());
                 else
-                    HasStuck = true;
+                    HasStuck = true;*/
             }
         }
 

@@ -8,11 +8,11 @@ namespace api.Services;
 
 public class GameEngine
 {
-    public Game CreateGame(int numberOfBots)
+    public Game CreateGame(NewGame newGameConfig)
     {
         var game = new Game();
 
-        CreatePlayers(game, numberOfBots);
+        CreatePlayers(game, newGameConfig);
 
         DealCards(game);
 
@@ -33,19 +33,19 @@ public class GameEngine
 
     internal static void PlayerTakeAHit(Game game)
     {
-        if (game.Player == null)
+        /*if (game.Player == null)
         {
             // Somehow we don't have a player
             return;
-        }
+        }*/
 
-        game.Player.ReceiveCard(game.Deck.GetNextCard());
+        //game.Player.ReceiveCard(game.Deck.GetNextCard());
     }
 
     internal static void DealerPlay(Game game)
     {
         //System.Console.WriteLine("Dealer play hand");
-        game.Dealer.PlayHand(game);
+        //game.Dealer.PlayHand(game);
 
         // After the dealer has played we need to work out who has beat the dealer
         // Possible we have multiple winners (bots and player, just player, just bot or dealer)
@@ -54,23 +54,23 @@ public class GameEngine
         //if(game.Dealer.HasBusted)
         //    return;
 
-        foreach (var bot in game.Bots)
+        /*foreach (var bot in game.Bots)
         {            
             if(bot.HasStuck)
                 bot.CheckIfWon(game.Dealer);
 
             //System.Console.WriteLine($"Dealer Play, has bot won {bot.HasWon}");
-        }
+        }*/
         
             
         //System.Console.WriteLine($"game player hand {game.Player.Hand1.Count()}");
-        if(!game.Player.HasBusted)
-            game.Player.CheckIfWon(game.Dealer);        
+        //if(!game.Player.HasBusted)
+        //    game.Player.CheckIfWon(game.Dealer);        
     }
 
     internal static void BotTakeATurn(Game game)
     {
-        var bot = game.Bots.First(p => !p.HasBusted && !p.HasStuck);
+        Bot bot = null;//game.Bots.First(p => !p.HasBusted && !p.HasStuck);
 
         if (bot == null)
         {
@@ -80,7 +80,7 @@ public class GameEngine
 
         //System.Console.WriteLine($"Next plyr is {bot.Hand1[0].Value} {bot.Hand1[0].Suit}");
 
-        bot.PlayHand(bot, game.Deck);
+        //bot.PlayHand(bot, game.Deck);
 
         if (!bot.HasSplit)
             return;
@@ -89,7 +89,7 @@ public class GameEngine
         bot.SetSecondHandActive();
 
         // Play the 2nd hand
-        bot.PlayHand(bot, game.Deck);
+        //bot.PlayHand(bot, game.Deck);
     }
 
 
@@ -100,11 +100,11 @@ public class GameEngine
             game.AddBot(new Bot() /*{ PlayerType = PlayerType.Bot }*/);
     }
 
-    private void CreatePlayers(Game game, int numberOfBots)
+    private void CreatePlayers(Game game, NewGame newGameConfig)
     {
-        CreateBots(game, numberOfBots);
+        CreateBots(game, newGameConfig.NumberOfBots);
 
-        game.Player = new Player();
-        game.Dealer = new Dealer();
+        game.Player = new Player(newGameConfig.UserId);
+        //game.Dealer = new Dealer();
     }
 }
