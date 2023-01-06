@@ -2,6 +2,10 @@ using common.Domain;
 
 namespace api.Services;
 
+// TODO: 5 cards is a winning hand as well
+// TODO: Need to be able to place bets and win money
+// TODO: Do we want to save the game state in the database rather than POST back each time?
+
 public class GameEngine
 {
     public Game CreateGame(int numberOfBots)
@@ -10,85 +14,97 @@ public class GameEngine
 
         CreatePlayers(game, numberOfBots);
 
-        DealCards(game.Players, game.Deck);
+        DealCards(game);
 
         return game;
     }
 
-    
-    public static void DealCards(List<Player> players, Deck deck)
+    public static void DealCards(Game game)
     {
         for (var i = 0; i < 2; i++)
         {
-            foreach (var player in players)
-                player.ReceiveCard(deck.GetNextCard());
+            foreach (var bot in game.Bots)
+                bot.ReceiveCard(game.Deck.GetNextCard());
+
+            game.Player.ReceiveCard(game.Deck.GetNextCard());
+            game.Dealer.ReceiveCard(game.Deck.GetNextCard());
         }
     }
 
-    internal static void TakeATurn(Game game)
+    internal static void PlayerTakeAHit(Game game)
     {
-        System.Console.WriteLine($"Game {game.Players.Count()}");
-        // Get the next player whos turn it is
-        var player = game.Players.First(p => !p.IsBusted && !p.HasStuck);
+        if (game.Player == null)
+        {
+            // Somehow we don't have a player
+            return;
+        }
 
-        if (player == null)
+        game.Player.ReceiveCard(game.Deck.GetNextCard());
+    }
+
+    internal static void DealerPlay(Game game)
+    {
+        //System.Console.WriteLine("Dealer play hand");
+        game.Dealer.PlayHand(game);
+
+        // After the dealer has played we need to work out who has beat the dealer
+        // Possible we have multiple winners (bots and player, just player, just bot or dealer)
+        // Dealer might have bust!
+
+        //if(game.Dealer.HasBusted)
+        //    return;
+
+        foreach (var bot in game.Bots)
+        {            
+            if(bot.HasStuck)
+                bot.CheckIfWon(game.Dealer);
+
+            //System.Console.WriteLine($"Dealer Play, has bot won {bot.HasWon}");
+        }
+        
+            
+        //System.Console.WriteLine($"game player hand {game.Player.Hand1.Count()}");
+        if(!game.Player.HasBusted)
+            game.Player.CheckIfWon(game.Dealer);        
+    }
+
+    internal static void BotTakeATurn(Game game)
+    {
+        var bot = game.Bots.First(p => !p.HasBusted && !p.HasStuck);
+
+        if (bot == null)
         {
             // All players finished?
             return;
         }
 
-        System.Console.WriteLine($"Next plyr is {player.Hand1[0].Value} {player.Hand1[0].Suit}");
+        //System.Console.WriteLine($"Next plyr is {bot.Hand1[0].Value} {bot.Hand1[0].Suit}");
 
-        PlayHand(player, game.Deck);
+        bot.PlayHand(bot, game.Deck);
 
-        if (!player.HasSplit)
+        if (!bot.HasSplit)
             return;
 
         // Player has split so set the second hand as active
-        player.SetSecondHandActive();
+        bot.SetSecondHandActive();
 
         // Play the 2nd hand
-        PlayHand(player, game.Deck);
+        bot.PlayHand(bot, game.Deck);
     }
 
-    private static void PlayHand(Player player, Deck deck)
-    {
-        while (true)
-        {
-            if (player.IsBusted || player.HasStuck)
-                break;
 
-            if (player.PlayerType == PlayerType.Bot)
-            {
-                //player.IsSplitting();
-
-                // Player double
-                if (player.IsDoubling())
-                {
-                    // Bet doubles
-                    // Get one more card
-                    player.ReceiveCard(deck.GetNextCard());
-                    break;
-                }
-            }
-
-            if (player.IsHitting()) 
-                player.ReceiveCard(deck.GetNextCard());
-        }
-    }
-
-    
 
     private void CreateBots(Game game, int numberOfBots)
     {
         for (var i = 0; i < numberOfBots; i++)
-            game.AddPlayer(new Player { PlayerType = PlayerType.Bot });
+            game.AddBot(new Bot() /*{ PlayerType = PlayerType.Bot }*/);
     }
 
     private void CreatePlayers(Game game, int numberOfBots)
     {
         CreateBots(game, numberOfBots);
-        game.AddPlayer(new Player { PlayerType = PlayerType.Player });
-        game.AddPlayer(new Player { PlayerType = PlayerType.Dealer });
+
+        game.Player = new Player();
+        game.Dealer = new Dealer();
     }
 }

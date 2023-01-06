@@ -1,0 +1,250 @@
+﻿@page "/playblackjack"
+@using System.Text
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@using common.Domain;
+@inject IHttpClientFactory ClientFactory
+
+<h3>PlayBlackjack</h3>
+
+<EditForm Model="@newGame" OnValidSubmit="@CreateGame">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <label id="icon" for="noofbots"><i class="fas fa-envelope"></i></label>
+    <input type="text" name="noofbots" id="noofbots" placeholder="Number of Bots" @bind-value="newGame.NumberOfBots" />
+
+    <div class="btn-block">
+        <button>Create Game</button>
+    </div>
+    <ul>
+        @if (Game.Dealer.Hand.Count() > 0)
+        {
+            @foreach (var bot in Game.Bots)
+            {
+                <li>
+                    @if (bot.HasBusted)
+                    {
+                        <span>BUSTED</span>
+                    }
+                    @if (bot.HasStuck)
+                    {
+                        <span>STICKING</span>
+                    }
+                    @if(bot.HasWon)
+                    {
+                        <span>WINNER</span>
+                    }
+
+                    @foreach (var card in bot.Hand1.Cards)
+                    {
+                        <div>@card.Value</div>
+                    }
+
+                    <div>@bot.Hand1.Cards.Sum(h => h.Value)</div>
+
+                    <hr />
+                </li>
+            }
+
+            <button type="button" @onclick="() => BotPlay()">Bot Play</button>
+
+            <div>Player Hand</div>
+            @if (Game.Player.HasBusted)
+            {
+                <span>BUSTED</span>
+            }
+            @if(Game.Player.HasWon)
+            {
+                <span>WINNER</span>
+            }
+            foreach (var card in Game.Player.Hand1.Cards)
+            {
+                <div>@card.Value</div>
+            }
+
+            @* <input type="text" name="bet" id="bet" placeholder="Bet Amount" @bind-value="betAmount" /> *@
+            
+            <button type="button" @onclick="() => PlayerHit()">Player Hit</button>
+            <button type="button" @onclick="() => PlayerStick()">Player Stick</button>
+            <button type="button" @onclick="() => PlayerSplit()" disabled="@(Game.Player.CanSplit)">Player Split</button>
+
+            <hr />
+
+            <div>Dealer Hand</div>
+            @if (Game.Dealer.HasBusted)
+            {
+                <span>BUSTED</span>
+            }
+
+            
+            @if(ShowDealerCard)
+            {
+                foreach (var card in Game.Dealer.Hand)
+                {
+                    <div>@card.Value</div>
+                }
+            }
+            else
+            {
+                <div>@Game.Dealer.Hand[0].Value</div>
+                <div>X</div>    
+            }
+            
+
+            <button type="button" @onclick="() => DealerPlay()">Dealer Play</button>
+        }
+
+    </ul>
+
+</EditForm>
+
+<span>@message</span>
+@code {
+
+    private string? message;
+    private NewGame newGame = new NewGame { NumberOfBots = 2 };
+    private Game Game = new();
+    private bool ShowDealerCard = false;
+
+    private async void PlayerSplit()
+    {
+        System.Console.WriteLine("£");
+    }
+
+    private async void PlayerStick()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7102/Player/Stick");
+        request.Content = new StringContent(JsonSerializer.Serialize(Game), Encoding.UTF8, "application/json");
+
+        var client = ClientFactory.CreateClient();
+
+        var response = await client.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
+        {
+            using var responseStream = await response.Content.ReadAsStreamAsync();
+            Game = await JsonSerializer.DeserializeAsync<Game>(responseStream);
+
+            //System.Console.WriteLine($"Returning Game {Game.Bots.Count()}");
+
+            StateHasChanged();
+        }
+        else
+        {
+            message = "Failed to take players turn";
+        }
+    }
+    private async void PlayerHit()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7102/Player/Hit");
+        request.Content = new StringContent(JsonSerializer.Serialize(Game), Encoding.UTF8, "application/json");
+
+        var client = ClientFactory.CreateClient();
+
+        var response = await client.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
+        {
+            using var responseStream = await response.Content.ReadAsStreamAsync();
+            Game = await JsonSerializer.DeserializeAsync<Game>(responseStream);
+
+            //System.Console.WriteLine($"Returning Game {Game.Bots.Count()}");
+
+            StateHasChanged();
+        }
+        else
+        {
+            message = "Failed to take players turn";
+        }
+    }
+
+    private async void CreateGame()
+    {
+        message = string.Empty;
+        ShowDealerCard = false;
+
+        var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7102/Game");
+        request.Content = new StringContent(JsonSerializer.Serialize(newGame), Encoding.UTF8, "application/json");
+
+        var client = ClientFactory.CreateClient();
+
+        var response = await client.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
+        {
+            using var responseStream = await response.Content.ReadAsStreamAsync();
+            Game = await JsonSerializer.DeserializeAsync<Game>(responseStream);            
+        }
+        else
+        {
+            message = "Failed to create a new game";
+        }
+
+        StateHasChanged();
+    }
+
+    private async void DealerPlay()
+    {
+        ShowDealerCard = true;
+
+        var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7102/Dealer/Play");
+        request.Content = new StringContent(JsonSerializer.Serialize(Game), Encoding.UTF8, "application/json");
+
+        var client = ClientFactory.CreateClient();
+
+        var response = await client.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
+        {
+            using var responseStream = await response.Content.ReadAsStreamAsync();
+            Game = await JsonSerializer.DeserializeAsync<Game>(responseStream);
+
+            //System.Console.WriteLine($"Returning Game after Dealer play");
+            //System.Console.WriteLine($"Player Won {Game.Player.HasWon}");
+            //System.Console.WriteLine($"Bots Won {Game.Bots.Any(x => x.HasWon)}");
+
+            @* foreach (var bot in Game.Bots)
+            {            
+                if(bot.HasWon)
+                    System.Console.WriteLine($"UI, has bot won");
+            } *@
+
+            // Game now contains the final state of the
+        }
+        else
+        {
+            message = "Failed to play dealer hand";
+        }
+
+        StateHasChanged();
+    }
+
+    private async void BotPlay()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7102/Bot");
+        request.Content = new StringContent(JsonSerializer.Serialize(Game), Encoding.UTF8, "application/json");
+
+        var client = ClientFactory.CreateClient();
+
+        var response = await client.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
+        {
+            using var responseStream = await response.Content.ReadAsStreamAsync();
+            Game = await JsonSerializer.DeserializeAsync<Game>(responseStream);
+        }
+        else
+        {
+            message = "Failed to play bot hand";
+        }
+
+        StateHasChanged();
+    }
+
+    private class NewGame
+    {
+        public int UserId { get; set; }
+        public int NumberOfBots { get; set; }
+    }
+}

@@ -1,12 +1,12 @@
-using common.Domain;
-using Microsoft.EntityFrameworkCore;
+// using common.Domain;
+// using Microsoft.EntityFrameworkCore;
 
-public partial class UserDb : DbContext
-{
-    public UserDb (DbContextOptions<UserDb> options)
-            : base(options)
-        {
-        }    
+// public partial class UserDb : DbContext
+// {
+//     public UserDb (DbContextOptions<UserDb> options)
+//             : base(options)
+//         {
+//         }    
     
-    public DbSet<User> Users { get; set; } = null!;
-}
+//     public DbSet<User> Users { get; set; } = null!;
+// }

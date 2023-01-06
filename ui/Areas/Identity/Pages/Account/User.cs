@@ -9,11 +9,5 @@ public class User
     public string? Email { get; set; }
 
     [Required]
-    public string? Password { get; set; }
-
-    /*public User(string email, string password)
-    {
-        Email = email;
-        Password = password;
-    }*/
+    public string? Password { get; set; }    
 }

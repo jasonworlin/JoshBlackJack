@@ -2,20 +2,21 @@
 @using System.Text
 @using System.Text.Json
 @using System.Text.Json.Serialization
+@using common.Domain;
 @inject IHttpClientFactory ClientFactory
 
 <h3>CreateUser</h3>
 
-<EditForm Model="@user" OnValidSubmit="@HandleValidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+<EditForm Model="@player" OnValidSubmit="@HandleValidSubmit">
+    @* <DataAnnotationsValidator />
+    <ValidationSummary /> *@
 
     <label id="icon" for="email"><i class="fas fa-envelope"></i></label>
-    <input type="text" name="email" id="email" placeholder="Email" @bind-value="user.Email"/>
+    <input type="text" name="email" id="email" placeholder="Email" @bind-value="player.Email"/>
     <label id="icon" for="name"><i class="fas fa-user"></i></label>
-    <input type="text" name="name" id="name" placeholder="Name" @bind-value="user.Name"/>
+    <input type="text" name="name" id="name" placeholder="Name" @bind-value="player.Name"/>
     <label id="icon" for="password"><i class="fas fa-unlock-alt"></i></label>
-    <input type="password" name="password" id="password" placeholder="Password" @bind-value="user.Password"/>
+    <input type="password" name="password" id="password" placeholder="Password" @bind-value="player.Password"/>
     <hr>    
     <hr>
     <div class="btn-block">
@@ -23,43 +24,33 @@
     </div>
 </EditForm>
 
+<span>@message</span>
+
 @code {
+    public string message;
 
-
-    private IEnumerable<GitHubBranch> branches = Array.Empty<GitHubBranch>();
-    private bool getBranchesError;
-    private bool shouldRender;
-
-    private User user = new(); 
+    private User player = new(); 
 
     private async void HandleValidSubmit()
     {
-        System.Console.WriteLine("HandleValidSubmit called");
-
         var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7102/User");
-        request.Content = new StringContent(JsonSerializer.Serialize(user), Encoding.UTF8, "application/json");
-        
+        request.Content = new StringContent(JsonSerializer.Serialize(player), Encoding.UTF8, "application/json");
+
         var client = ClientFactory.CreateClient();
 
         var response = await client.SendAsync(request);
 
+        var responseStream = await response.Content.ReadAsStringAsync();
+
         if (response.IsSuccessStatusCode)
         {
-            /*using var responseStream = await response.Content.ReadAsStreamAsync();
-            branches = await JsonSerializer.DeserializeAsync
-                <IEnumerable<GitHubBranch>>(responseStream);*/
+            message = "Player added";
         }
         else
         {
-            getBranchesError = true;
+            message = responseStream;            
         }
 
-        shouldRender = true;
-    }
-
-    public class GitHubBranch
-    {
-        [JsonPropertyName("name")]
-        public string Name { get; set; }
-    }
+        StateHasChanged();
+    }    
 }

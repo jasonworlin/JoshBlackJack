@@ -11,7 +11,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddDbContext<UserDb>(options =>
+builder.Services.AddDbContext<GameDb>(options =>
 options.UseSqlite(builder.Configuration.GetConnectionString("BlackJackSQLite")));
 
 builder.Services.AddSwaggerGen();
