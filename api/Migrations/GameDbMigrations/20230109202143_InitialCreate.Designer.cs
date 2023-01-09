@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace api.Migrations.GameDbMigrations
 {
     [DbContext(typeof(GameDb))]
-    [Migration("20230109082224_InitialCreate")]
+    [Migration("20230109202143_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -169,8 +169,15 @@ namespace api.Migrations.GameDbMigrations
                     b.Property<decimal>("Balance")
                         .HasColumnType("TEXT");
 
+                    b.Property<decimal>("BetPlaced")
+                        .HasColumnType("TEXT");
+
                     b.Property<bool>("CanSplit")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("Hand1HandId")
                         .HasColumnType("INTEGER");
@@ -186,6 +193,14 @@ namespace api.Migrations.GameDbMigrations
 
                     b.Property<bool>("HasWon")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("UserId")
                         .HasColumnType("INTEGER");

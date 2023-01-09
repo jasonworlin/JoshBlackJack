@@ -87,14 +87,18 @@ namespace api.Migrations.GameDbMigrations
                 {
                     PlayerId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    UserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Balance = table.Column<decimal>(type: "TEXT", nullable: false),
                     Hand1HandId = table.Column<int>(type: "INTEGER", nullable: false),
                     Hand2HandId = table.Column<int>(type: "INTEGER", nullable: false),
+                    BetPlaced = table.Column<decimal>(type: "TEXT", nullable: false),
                     HasBusted = table.Column<bool>(type: "INTEGER", nullable: false),
                     HasStuck = table.Column<bool>(type: "INTEGER", nullable: false),
                     CanSplit = table.Column<bool>(type: "INTEGER", nullable: false),
-                    HasWon = table.Column<bool>(type: "INTEGER", nullable: false)
+                    HasWon = table.Column<bool>(type: "INTEGER", nullable: false),
+                    UserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    Email = table.Column<string>(type: "TEXT", nullable: false),
+                    Password = table.Column<string>(type: "TEXT", nullable: false),
+                    Balance = table.Column<decimal>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {

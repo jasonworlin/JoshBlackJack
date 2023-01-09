@@ -14,10 +14,17 @@ public class GameEngine
 
         CreatePlayers(game, newGameConfig);
 
+        //AdjustPlayerBalance(newGameConfig);
+
         DealCards(game);
 
         return game;
     }
+
+    // public void AdjustPlayerBalance(NewGame newGameConfig)
+    // {
+
+    // }
 
     public static void DealCards(Game game)
     {
@@ -55,16 +62,23 @@ public class GameEngine
         //    return;
 
         foreach (var bot in game.Bots)
-        {            
-            if(bot.HasStuck)
+        {
+            if (bot.HasStuck)
                 bot.CheckIfWon(game.Dealer);
 
             System.Console.WriteLine($"Dealer Play, has bot won {bot.HasWon}");
         }
-        
+
         System.Console.WriteLine($"game player hand {game.Player.Hand1.Cards.Count()}");
-        if(!game.Player.HasBusted)
-            game.Player.CheckIfWon(game.Dealer);        
+        if (!game.Player.HasBusted)
+        {
+            game.Player.CheckIfWon(game.Dealer);
+        }
+    }
+
+    public static decimal CalculateWinnings(Player player)
+    {
+        return ((player.BetPlaced / 2) * 3) + player.BetPlaced;
     }
 
     internal static void BotTakeATurn(Game game)

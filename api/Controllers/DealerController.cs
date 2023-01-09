@@ -11,20 +11,22 @@ namespace api.Controllers
     {
         private readonly ILogger<PlayerController> _logger;
 
-        private readonly GameDb _context;
-        public DealerController(GameDb context, ILogger<PlayerController> logger)
+        private readonly GameDb _GameContext;
+        private readonly UserDb _UserContext;
+        public DealerController(GameDb gameContext, UserDb userContext, ILogger<PlayerController> logger)
         {
-            _context = context;
+            _GameContext = gameContext;
+            _UserContext = userContext;
             _logger = logger;
         }
-        
+
         [HttpPost("Play")]
         public async Task<ActionResult> Play(int gameId)
         {
             System.Console.WriteLine($"********************************************DEALER playing on game {gameId}");
             var gameEngine = new GameEngine();
 
-            var game = _context.Games
+            var game = _GameContext.Games
                 .Include(b => b.Bots).ThenInclude(b => b.Hand1).ThenInclude(x => x.Cards)
                 .Include(b => b.Bots).ThenInclude(b => b.Hand2).ThenInclude(x => x.Cards)
                 .Include(d => d.Deck).ThenInclude(c => c.Cards)
@@ -36,11 +38,33 @@ namespace api.Controllers
 
             GameEngine.DealerPlay(game);
 
+            // TODO: This should be in the game engine really but it doesn't currently have a reference to the UserContext. Could pass it in?
+            //if (game.Player.HasWon)
+            {
+                //Not saving the new balance
+                var existingUser = await _UserContext.Users.FirstOrDefaultAsync(u => u.UserId == game.Player.UserId);
+
+                if (existingUser == null)
+                {
+                    return BadRequest($"Unable to find user");
+                }
+
+                var winnings = GameEngine.CalculateWinnings(game.Player);
+                System.Console.WriteLine($"WINNINGS {winnings}");
+
+                System.Console.WriteLine($"Starting balance {existingUser.Balance}");
+                existingUser.Balance += GameEngine.CalculateWinnings(game.Player);
+                game.Player.Balance = existingUser.Balance;
+                System.Console.WriteLine($"Closing balance {existingUser.Balance}");
+
+                await _UserContext.SaveChangesAsync();
+            }
+
             System.Console.WriteLine($"Bots Won {game.Bots.Any(x => x.HasWon)}");
 
-            await _context.SaveChangesAsync();
+            await _GameContext.SaveChangesAsync();
 
             return new OkObjectResult(game);
-        }                
+        }
     }
 }

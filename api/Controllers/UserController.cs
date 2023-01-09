@@ -28,7 +28,7 @@ namespace api.Controllers
             };
         }
 
-        [HttpPost(Name = "CreateUser")]
+        [HttpPost("CreateUser")]
         public async Task<IActionResult> Post(User user)        
         {
             //var player = new Player(user.Name, user.Email, user.Password);
@@ -47,15 +47,26 @@ namespace api.Controllers
 
             // TODO: Hash the password here
             _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-                    
-                
-
-            /* TODO: Check the user doesnt exist
-            *  Add the user to the user database
-            */ 
+            await _context.SaveChangesAsync();                                            
 
             return new OkResult();
+        }
+
+        [HttpPost("Login")]
+        public async Task<ActionResult> Login(string email, string password)
+        {
+            System.Console.WriteLine($"API - Loggin in {email}, {password}");
+            // TODO: Hash password and check for match
+            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
+
+            if(existingUser == null)
+            {
+                System.Console.WriteLine("Failed to login");
+                return BadRequest($"Failed to login");
+            }
+
+            System.Console.WriteLine("API - Logged in!");
+            return new OkObjectResult(existingUser);
         }
     }
 }

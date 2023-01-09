@@ -21,7 +21,7 @@ namespace api.Controllers
         [HttpPost("Hit")]
         public async Task<ActionResult> Hit(int gameId)
         {
-            System.Console.WriteLine($"********************************************Player taking go on game {gameId}");
+            System.Console.WriteLine($"API - Player taking go on game {gameId}");
 
             var gameEngine = new GameEngine();
 
@@ -43,7 +43,7 @@ namespace api.Controllers
         [HttpPost("Stick")]
         public async Task<ActionResult> Stick(int gameId)
         {
-            System.Console.WriteLine($"********************************************Player STICKIN on game {gameId}");
+            System.Console.WriteLine($"API - Player STICKIN on game {gameId}");
             var gameEngine = new GameEngine();
 
             var game = _context.Games
