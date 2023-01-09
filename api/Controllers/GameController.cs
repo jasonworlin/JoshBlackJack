@@ -31,6 +31,8 @@ namespace api.Controllers
             _context.Games.Add(game);
             await _context.SaveChangesAsync();
 
+            System.Console.WriteLine($"New game Id {game.GameId}");
+
             return new OkObjectResult(game);
         }                
     }

@@ -114,8 +114,8 @@
 
     private async void PlayerStick()
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7102/Player/Stick");
-        request.Content = new StringContent(JsonSerializer.Serialize(Game), Encoding.UTF8, "application/json");
+        var request = new HttpRequestMessage(HttpMethod.Post, $"https://localhost:7102/Player/Stick?gameId={Game.GameId}");
+        //request.Content = new StringContent(JsonSerializer.Serialize(Game), Encoding.UTF8, "application/json");
 
         var client = ClientFactory.CreateClient();
 
@@ -137,8 +137,10 @@
     }
     private async void PlayerHit()
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7102/Player/Hit");
-        request.Content = new StringContent(JsonSerializer.Serialize(Game), Encoding.UTF8, "application/json");
+        System.Console.WriteLine($"Jst abt to ply player on game {Game.GameId}");
+
+        var request = new HttpRequestMessage(HttpMethod.Post, $"https://localhost:7102/Player/Hit?gameId={Game.GameId}");
+        //request.Content = new StringContent(JsonSerializer.Serialize(Game), Encoding.UTF8, "application/json");
 
         var client = ClientFactory.CreateClient();
 
@@ -174,7 +176,9 @@
         if (response.IsSuccessStatusCode)
         {
             using var responseStream = await response.Content.ReadAsStreamAsync();
-            Game = await JsonSerializer.DeserializeAsync<Game>(responseStream);            
+            Game = await JsonSerializer.DeserializeAsync<Game>(responseStream);     
+
+            System.Console.WriteLine($"Jst created the game {Game.GameId}");
         }
         else
         {
@@ -188,8 +192,10 @@
     {
         ShowDealerCard = true;
 
-        var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7102/Dealer/Play");
-        request.Content = new StringContent(JsonSerializer.Serialize(Game), Encoding.UTF8, "application/json");
+        System.Console.WriteLine($"Jst abt to ply DEALER on game {Game.GameId}");
+
+        var request = new HttpRequestMessage(HttpMethod.Post, $"https://localhost:7102/Dealer/Play?gameId={Game.GameId}");
+        //request.Content = new StringContent(JsonSerializer.Serialize(Game), Encoding.UTF8, "application/json");
 
         var client = ClientFactory.CreateClient();
 
@@ -200,15 +206,15 @@
             using var responseStream = await response.Content.ReadAsStreamAsync();
             Game = await JsonSerializer.DeserializeAsync<Game>(responseStream);
 
-            //System.Console.WriteLine($"Returning Game after Dealer play");
-            //System.Console.WriteLine($"Player Won {Game.Player.HasWon}");
-            //System.Console.WriteLine($"Bots Won {Game.Bots.Any(x => x.HasWon)}");
+            System.Console.WriteLine($"Returning Game after Dealer play");
+            System.Console.WriteLine($"Player Won {Game.Player.HasWon}");
+            System.Console.WriteLine($"Bots Won {Game.Bots.Any(x => x.HasWon)}");
 
-            @* foreach (var bot in Game.Bots)
+            @foreach (var bot in Game.Bots)
             {            
                 if(bot.HasWon)
                     System.Console.WriteLine($"UI, has bot won");
-            } *@
+            }
 
             // Game now contains the final state of the
         }
@@ -222,8 +228,11 @@
 
     private async void BotPlay()
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7102/Bot");
-        request.Content = new StringContent(JsonSerializer.Serialize(Game), Encoding.UTF8, "application/json");
+        System.Console.WriteLine($"Jst abt to ply bot on game {Game.GameId}");
+
+        var request = new HttpRequestMessage(HttpMethod.Post, $"https://localhost:7102/Bot?gameId={Game.GameId}");
+        //request.Content = new StringContent(/*JsonSerializer.Serialize(Game),*/ 
+         //   JsonSerializer.Serialize(new {gameId = Game.GameId}), Encoding.UTF8, "application/json");
 
         var client = ClientFactory.CreateClient();
 

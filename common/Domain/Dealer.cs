@@ -46,10 +46,10 @@
                 if (HasBusted || HasStuck)
                     break;
 
-                /*if (IsHitting())
+                if (IsHitting())
                     ReceiveCard(game.Deck.GetNextCard());
                 else
-                    HasStuck = true;*/
+                    HasStuck = true;
             }
         }
 

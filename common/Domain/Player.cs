@@ -25,7 +25,7 @@ public class Player
 
     public Player()
     {
-        System.Console.WriteLine("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+        System.Console.WriteLine("NEW PLAYER CREATED 1");
         _total = 0;
         _activeHand = ActiveHand.Hand1;
         Hand1 = new Hand();
@@ -34,7 +34,7 @@ public class Player
 
     public Player(int userId) : this()
     {
-        System.Console.WriteLine("********************************************");
+        System.Console.WriteLine("NEW PLAYER CREATED 2");
         UserId = userId;            
     }
 

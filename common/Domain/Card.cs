@@ -4,7 +4,7 @@ public class Card
 {
     //private string _suit;
     //private int _value;
-
+    
     public int CardId { get; set; }
 
     /*public Card(string suit, int value)
