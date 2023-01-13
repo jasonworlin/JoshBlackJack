@@ -76,7 +76,7 @@ public class GameEngine
         }
     }
 
-    public static decimal CalculateWinnings(Player player)
+    public static int CalculateWinnings(Player player)
     {
         return ((player.BetPlaced / 2) * 3) + player.BetPlaced;
     }

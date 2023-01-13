@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace api.Migrations.GameDbMigrations
 {
     [DbContext(typeof(GameDb))]
-    [Migration("20230109202143_InitialCreate")]
+    [Migration("20230112094021_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -166,11 +166,11 @@ namespace api.Migrations.GameDbMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<decimal>("Balance")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Balance")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<decimal>("BetPlaced")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("BetPlaced")
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("CanSplit")
                         .HasColumnType("INTEGER");

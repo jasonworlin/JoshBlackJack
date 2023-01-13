@@ -164,11 +164,11 @@ namespace api.Migrations.GameDbMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<decimal>("Balance")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Balance")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<decimal>("BetPlaced")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("BetPlaced")
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("CanSplit")
                         .HasColumnType("INTEGER");
