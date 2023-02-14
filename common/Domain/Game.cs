@@ -11,7 +11,6 @@ public class Game
     {
         Deck = new Deck();
         Bots = new List<Bot>();
-        //Player = new Player();
         Dealer = new Dealer();
     }
 

@@ -1,5 +1,4 @@
 using api.Services;
-using common.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,8 +20,6 @@ namespace api.Controllers
         [HttpPost("Hit")]
         public async Task<ActionResult> Hit(int gameId)
         {
-            System.Console.WriteLine($"API - Player taking go on game {gameId}");
-
             var gameEngine = new GameEngine();
 
             var game = _context.Games
@@ -43,7 +40,6 @@ namespace api.Controllers
         [HttpPost("Stick")]
         public async Task<ActionResult> Stick(int gameId)
         {
-            System.Console.WriteLine($"API - Player STICKIN on game {gameId}");
             var gameEngine = new GameEngine();
 
             var game = _context.Games
@@ -55,6 +51,26 @@ namespace api.Controllers
                 .Single(x => x.GameId == gameId);
             
             game.Player.Sticking();
+
+            await _context.SaveChangesAsync();
+
+            return new OkObjectResult(game);
+        }        
+
+        [HttpPost("Split")]
+        public async Task<ActionResult> Split(int gameId)
+        {
+            var gameEngine = new GameEngine();
+
+            var game = _context.Games
+                .Include(b => b.Bots).ThenInclude(b => b.Hand1).ThenInclude(x => x.Cards)
+                .Include(b => b.Bots).ThenInclude(b => b.Hand2).ThenInclude(x => x.Cards)
+                .Include(d => d.Deck).ThenInclude(c => c.Cards)
+                .Include(d => d.Dealer).ThenInclude(b => b.Hand).ThenInclude(x => x.Cards)
+                .Include(p => p.Player).ThenInclude(b => b.Hand1).ThenInclude(x => x.Cards)
+                .Single(x => x.GameId == gameId);
+            
+            game.Player.Split();
 
             await _context.SaveChangesAsync();
 

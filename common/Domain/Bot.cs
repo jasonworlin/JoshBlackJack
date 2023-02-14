@@ -63,17 +63,8 @@ public class Bot
 
     public void ReceiveCard(Card card)
     {
-        //System.Console.WriteLine($"Card value {card.Value}");
-
         var (total1, total2) = CalculateTotal();
-
-        //System.Console.WriteLine($"PRE TOTAL1 {total1}");
-        //System.Console.WriteLine($"PRE TOTAL2 {total2}");
-
         total1 += card.Value;
-
-        //System.Console.WriteLine($"POST TOTAL1 {total1}");
-        //System.Console.WriteLine($"POST TOTAL2 {total2}");
 
         /*if (total2 > 0)
             total2 += card.Value;*/
@@ -155,7 +146,6 @@ public class Bot
 
     public void CheckIfWon(Dealer dealer)
     {
-        //System.Console.WriteLine($"Bots dealer busted {dealer.HasBusted}");
         if (dealer.HasBusted || CalculateTotal().total1 > dealer.Total)
             HasWon = true;
     }
@@ -165,15 +155,11 @@ public class Bot
         // TODO: Refactor 
         if (_activeHand == ActiveHand.Hand1)
         {
-            //System.Console.WriteLine("Hand 1");
-
             //if (Hand1.All(x => x.Value != 1))
             return (Hand1.Cards.Sum(card => card.Value), 0);
 
             // We have an Ace
             // This means there might be 2 totals!
-
-            //System.Console.WriteLine("We have an Ace");
 
             var total1 = Hand1.Cards.Sum(card => card.Value);
 

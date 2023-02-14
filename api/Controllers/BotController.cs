@@ -1,6 +1,4 @@
-using System.Net;
 using api.Services;
-using common.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,13 +17,12 @@ namespace api.Controllers
             _logger = logger;
         }
 
-        [HttpPost(Name = "TakeGo")]
-        public async Task<ActionResult> TakeGo(int gameId)
+        [HttpPost("Play")]
+        public async Task<ActionResult> Play(int gameId)
         {
-            System.Console.WriteLine($"********************************************Bot taking go on game {gameId}");
-            // TODO: Rename function to Play
-            var gameEngine = new GameEngine()/*{Game = game}*/;
+            var gameEngine = new GameEngine();
 
+            // Load all the related data in the query results we need for the bot to be able to play the hand
             var game = _context.Games
                 .Include(b => b.Bots).ThenInclude(b => b.Hand1).ThenInclude(x => x.Cards)
                 .Include(b => b.Bots).ThenInclude(b => b.Hand2).ThenInclude(x => x.Cards)
@@ -34,14 +31,12 @@ namespace api.Controllers
                 .Include(p => p.Player).ThenInclude(b => b.Hand1).ThenInclude(x => x.Cards)
                 .Single(x => x.GameId == gameId);
 
-            if(game == null)
+            if (game == null)
             {
-                System.Console.WriteLine("NO GAME");
-                return BadRequest();
+                return BadRequest("No game found");
             }
 
-            // Game engine to work out whos turn it is nxt somehow.
-            GameEngine.BotTakeATurn(game);
+            GameEngine.BotPlayHand(game);
 
             await _context.SaveChangesAsync();
 

@@ -1,5 +1,4 @@
 using api.Services;
-using common.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,7 +22,6 @@ namespace api.Controllers
         [HttpPost("Play")]
         public async Task<ActionResult> Play(int gameId)
         {
-            System.Console.WriteLine($"********************************************DEALER playing on game {gameId}");
             var gameEngine = new GameEngine();
 
             var game = _GameContext.Games
@@ -33,8 +31,6 @@ namespace api.Controllers
                 .Include(d => d.Dealer).ThenInclude(b => b.Hand).ThenInclude(x => x.Cards)
                 .Include(p => p.Player).ThenInclude(b => b.Hand1).ThenInclude(x => x.Cards)
                 .Single(x => x.GameId == gameId);
-
-            System.Console.WriteLine($"DEALER - GOT THE GAME");
 
             GameEngine.DealerPlay(game);
 
@@ -49,18 +45,11 @@ namespace api.Controllers
                     return BadRequest($"Unable to find user");
                 }
 
-                var winnings = GameEngine.CalculateWinnings(game.Player);
-                System.Console.WriteLine($"WINNINGS {winnings}");
-
-                System.Console.WriteLine($"Starting balance {existingUser.Balance}");
                 existingUser.Balance += GameEngine.CalculateWinnings(game.Player);
                 game.Player.Balance = existingUser.Balance;
-                System.Console.WriteLine($"Closing balance {existingUser.Balance}");
 
                 await _UserContext.SaveChangesAsync();
             }
-
-            System.Console.WriteLine($"Bots Won {game.Bots.Any(x => x.HasWon)}");
 
             await _GameContext.SaveChangesAsync();
 

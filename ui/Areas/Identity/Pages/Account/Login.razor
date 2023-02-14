@@ -1,0 +1,44 @@
+@page "/login"
+@using System.Text
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@using common.Domain;
+@inject NavigationManager UriHelper
+@inject IHttpClientFactory ClientFactory
+
+
+<input type="text" name="email" id="email" placeholder="Email" @bind-value="email" />
+<input type="text" name="password" id="password" placeholder="Password" @bind-value="password" />
+<button type="button" @onclick="() => LogUserIn()">Login</button>
+<span>@message</span>
+
+
+@code {
+    private string email;
+    private string password;
+    private string message;
+
+    private async void LogUserIn()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Post,
+        $"https://localhost:7102/User/Login?email={email}&password={password}");
+
+        var client = ClientFactory.CreateClient();
+
+        var response = await client.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
+        {
+            using var responseStream = await response.Content.ReadAsStreamAsync();
+            var user = await JsonSerializer.DeserializeAsync<User>(responseStream);
+
+            System.Console.WriteLine($"playblackjack?userId={user.UserId}&balance={user.Balance}");
+            UriHelper.NavigateTo($"playblackjack?userId={user.UserId}&balance={user.Balance}");
+        }
+        else
+        {
+            message = "Failed to login";
+            StateHasChanged();
+        }     
+    }
+}

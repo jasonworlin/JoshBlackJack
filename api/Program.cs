@@ -20,7 +20,6 @@ options.UseSqlite(builder.Configuration.GetConnectionString("BlackJackSQLite")))
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-//app.MapGet("/jason", () => new { FirstName = "Gérald", LastName = "Barré" });
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

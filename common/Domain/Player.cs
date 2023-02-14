@@ -2,13 +2,9 @@
 
 namespace common.Domain;
 
-public class Player
+public class Player : User
 {
     public int PlayerId { get; set; }
-    public int UserId { get; set; }
-
-    //[JsonIgnore]
-    public decimal Balance { get; set; }
 
     // TODO: Pull this out as Bot & Player use this
     private enum ActiveHand
@@ -23,9 +19,10 @@ public class Player
     public Hand Hand1 { get; set; }
     public Hand Hand2 { get; set; }
 
+    public int BetPlaced { get; set; }
+
     public Player()
     {
-        System.Console.WriteLine("NEW PLAYER CREATED 1");
         _total = 0;
         _activeHand = ActiveHand.Hand1;
         Hand1 = new Hand();
@@ -34,13 +31,11 @@ public class Player
 
     public Player(int userId) : this()
     {
-        System.Console.WriteLine("NEW PLAYER CREATED 2");
         UserId = userId;            
     }
 
     public bool HasBusted { get; set; }
     public bool HasStuck { get; set; }
-    //public bool HasSplit { get; set; }
     public bool CanSplit { get; set; }
     public bool HasWon { get; set; }
 
@@ -93,6 +88,14 @@ public class Player
             Hand2.Cards.Add(card);
     }
 
+    public void Split()
+    {
+        _activeHand = ActiveHand.Hand1;
+
+        Hand2.Cards.Add(Hand1.Cards[0]);
+        Hand1.Cards.RemoveAt(0);
+    }
+
     // public bool IsSplitting()
     // {
     //     // Don't split twice
@@ -112,13 +115,13 @@ public class Player
         HasStuck = true;
     }
 
-    private void Split()
+    /*private void Split()
     {
         //HasSplit = true;
         //Hand2 = new Hand();
-        Hand2.Cards.Add(Hand1.Cards[0]);
-        Hand1.Cards.RemoveAt(0);
-    }
+        //Hand2.Cards.Add(Hand1.Cards[0]);
+        //Hand1.Cards.RemoveAt(0);
+    }*/
 
     private void SetSecondHandActive()
     {
@@ -133,15 +136,11 @@ public class Player
         // TODO: Refactor 
         if (_activeHand == ActiveHand.Hand1)
         {
-            System.Console.WriteLine("Hand 1");
-
             //if (Hand1.All(x => x.Value != 1))
             return (Hand1.Cards.Sum(card => card.Value), 0);
 
             // We have an Ace
             // This means there might be 2 totals!
-
-            //System.Console.WriteLine("We have an Ace");
 
             var total1 = Hand1.Cards.Sum(card => card.Value);
 
@@ -149,7 +148,7 @@ public class Player
         }
         else
         {
-            if (Hand2.Cards.All(x => x.Value != 1))
+            //if (Hand2.Cards.All(x => x.Value != 1))
                 return (Hand2.Cards.Sum(card => card.Value), 0);
 
             // We have an Ace
@@ -161,14 +160,13 @@ public class Player
         }
     }
 
-    public void CheckIfWon(Dealer dealer)
+    public bool CheckIfWon(Dealer dealer)
     {
-        //System.Console.WriteLine($"Player dealer busted {dealer.HasBusted}");
-        //System.Console.WriteLine($"{CalculateTotal().total1}, {dealer.Total}");
         if (dealer.HasBusted || CalculateTotal().total1 > dealer.Total)
         {
-            System.Console.WriteLine("Player won");
             HasWon = true;
         }
+
+        return HasWon;
     }
 }

@@ -1,0 +1,143 @@
+#game {
+  background: transparent
+    url("https://www.clowerweb.com/cors/blackjack/table.png") 0 0 no-repeat;
+  border-radius: 5px;
+  color: #333;
+  font: 14px/17px Helvetica, Arial, Verdana, sans-serif;
+  height: 550px;
+  margin: 0 auto;
+  position: relative;
+  width: 1000px;
+}
+
+#dealer-blank {
+  background: transparent
+    url("images/cardback.png") 0 0 no-repeat;
+}
+
+/* BUTTON STYLES */
+.button-container {
+  margin: 20px auto;
+  height: 100px;
+  width: 700px;
+  border-radius: 15px;
+}
+
+.button-container div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.buttons button {
+  color: #484e56;
+  width: 147px;
+  background-color: #efefef;
+  border: none;
+  text-transform: uppercase;
+  font-size: 15px;
+  letter-spacing: 0.1em;
+  margin-top: 22px;
+  vertical-align: top;
+  height: 50px;
+}
+
+.buttons button:hover {
+  opacity: 0.7;
+  transition: 1s;
+  cursor: pointer;
+}
+
+.buttons button:focus {
+  outline: none;
+  border: none;
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* BET STYLES */
+.betting {
+  margin: 20px auto;
+  height: 100px;
+  width: 700px;
+  background-color: #d9dbdd;
+  border-radius: 15px;
+}
+
+.betting div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.betting img {
+  height: 80px;
+  margin-top: 8px;
+  margin-right: 18px;
+}
+
+.betting img:hover {
+  cursor: pointer;
+}
+
+.bet-square {
+  float: left;
+  margin-left: 42px;
+}
+
+.pot-square {
+  float: right;
+  margin-right: 47px;
+}
+
+/* BOT STYLES */
+.bot-container {
+  margin: 20px auto;
+  height: 100px;
+  width: 700px;
+  background-color: #d9dbdd;
+  border-radius: 15px;
+}
+
+.bots img {
+  height: 80px;
+  margin-top: 8px;
+  margin-right: 18px;
+}
+
+.bot-container div {
+  display: inline-block;
+}
+
+.bot-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* CHIPS STYLES */
+.chips {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bet-square,
+.pot-square {
+  font-weight: 800;
+  font-size: 23px;
+  margin-top: 12px;
+  width: 100px;
+  letter-spacing: 0.1em;
+  color: #484e56;
+  text-transform: uppercase;
+}
+
+/*#pot,
+    #bet {
+        margin-top: -24px;
+        margin-left: -5px;
+    }*/
