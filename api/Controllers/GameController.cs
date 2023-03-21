@@ -10,9 +10,9 @@ namespace api.Controllers
     public class GameController : ControllerBase
     {
         private readonly ILogger<GameController> _logger;
-
         private readonly GameDb _GameContext;
         private readonly UserDb _UserContext;
+        
         public GameController(GameDb gameContext, UserDb userContext, ILogger<GameController> logger)
         {
             _GameContext = gameContext;
@@ -25,7 +25,7 @@ namespace api.Controllers
         {
             Console.BackgroundColor = ConsoleColor.Blue;
             Console.ForegroundColor = ConsoleColor.Green;
-            // TESTING ONLY - take the user id from the NewGame passed in
+            // TODO TESTING ONLY - take the user id from the NewGame passed in
             newGame.UserId = 1;
 
             var existingUser = await _UserContext.Users.FirstOrDefaultAsync(u => u.UserId == newGame.UserId);

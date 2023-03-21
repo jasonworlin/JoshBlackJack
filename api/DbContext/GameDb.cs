@@ -8,7 +8,7 @@ public partial class GameDb : DbContext
     {
     }
 
-    public DbSet<Game> Games { get; set; } = null!;
+    public DbSet<Game> Games { get; set; }
     public DbSet<Deck> Decks { get; set; }
     public DbSet<Bot> Bots { get; set; }
     public DbSet<Player> Players { get; set; }

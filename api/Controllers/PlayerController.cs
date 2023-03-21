@@ -9,11 +9,13 @@ namespace api.Controllers
     public class PlayerController : ControllerBase
     {
         private readonly ILogger<PlayerController> _logger;
-
         private readonly GameDb _context;
-        public PlayerController(GameDb context, ILogger<PlayerController> logger)
+        private readonly IGameEngine _gameEngine;
+        
+        public PlayerController(GameDb context, IGameEngine gameEngine, ILogger<PlayerController> logger)
         {
             _context = context;
+            _gameEngine = gameEngine;
             _logger = logger;
         }
         
@@ -30,7 +32,7 @@ namespace api.Controllers
                 .Include(p => p.Player).ThenInclude(b => b.Hand1).ThenInclude(x => x.Cards)
                 .Single(x => x.GameId == gameId);
 
-            GameEngine.PlayerTakeAHit(game);
+            _gameEngine.PlayerTakeAHit(game);
 
             await _context.SaveChangesAsync();
 

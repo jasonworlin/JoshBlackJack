@@ -2,6 +2,7 @@ using api.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+// TODO Exception Handling
 namespace api.Controllers
 {
     [ApiController]
@@ -9,11 +10,13 @@ namespace api.Controllers
     public class BotController : ControllerBase
     {
         private readonly ILogger<BotController> _logger;
-
         private readonly GameDb _context;
-        public BotController(GameDb context, ILogger<BotController> logger)
+        private readonly IGameEngine _gameEngine;
+
+        public BotController(GameDb context, IGameEngine gameEngine, ILogger<BotController> logger)
         {
             _context = context;
+            _gameEngine = gameEngine;
             _logger = logger;
         }
 
@@ -31,13 +34,16 @@ namespace api.Controllers
                 .Include(p => p.Player).ThenInclude(b => b.Hand1).ThenInclude(x => x.Cards)
                 .Single(x => x.GameId == gameId);
 
+            // Check the game was found
             if (game == null)
             {
                 return BadRequest("No game found");
             }
 
-            GameEngine.BotPlayHand(game);
+            // Play the bot hand
+            _gameEngine.BotPlayHand(game);
 
+            // Save the game state
             await _context.SaveChangesAsync();
 
             return new OkObjectResult(game);
