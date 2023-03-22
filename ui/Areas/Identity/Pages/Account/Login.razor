@@ -5,12 +5,28 @@
 @using common.Domain;
 @inject NavigationManager UriHelper
 @inject IHttpClientFactory ClientFactory
-
-
+<h1>Please Login</h1>
+<div class="login">
+<p></p>
+<h2>Welcome back to blackjack </h2>
+<label for="password"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Email:</b></label>
 <input type="text" name="email" id="email" placeholder="Email" @bind-value="email" />
+<p> </p>
+<label for="password"><b>Password:</b></label>
 <input type="text" name="password" id="password" placeholder="Password" @bind-value="password" />
-<button type="button" @onclick="() => LogUserIn()">Login</button>
+<p> </p>
 <span>@message</span>
+</div>
+<p></p>
+<div class="Button">
+<button class="innerbtn" @onclick="() => LogUserIn()">Login</button>
+</div>
+
+
+
+
+
+                   
 
 
 @code {

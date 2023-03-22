@@ -1,6 +1,6 @@
 #game {
   background: transparent
-    url("https://www.clowerweb.com/cors/blackjack/table.png") 0 0 no-repeat;
+    url('https://www.clowerweb.com/cors/blackjack/table.png') 0 0 no-repeat;
   border-radius: 5px;
   color: #333;
   font: 14px/17px Helvetica, Arial, Verdana, sans-serif;
@@ -11,8 +11,7 @@
 }
 
 #dealer-blank {
-  background: transparent
-    url("images/cardback.png") 0 0 no-repeat;
+  background: transparent url('images/cardback.png') 0 0 no-repeat;
 }
 
 /* BUTTON STYLES */
@@ -134,6 +133,9 @@
   letter-spacing: 0.1em;
   color: #484e56;
   text-transform: uppercase;
+}
+
+.dealButton {
 }
 
 /*#pot,

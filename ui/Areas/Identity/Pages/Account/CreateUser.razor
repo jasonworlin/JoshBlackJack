@@ -5,20 +5,35 @@
 @using common.Domain;
 @inject IHttpClientFactory ClientFactory
 
-<h3>CreateUser</h3>
+<h3>
+    Create An Account </h3>
 
 <EditForm Model="@player" OnValidSubmit="@HandleValidSubmit">
     @* <DataAnnotationsValidator />
     <ValidationSummary /> *@
 
-    <label id="icon" for="email"><i class="fas fa-envelope"></i></label>
-    <input type="text" name="email" id="email" placeholder="Email" @bind-value="player.Email"/>
-    <label id="icon" for="name"><i class="fas fa-user"></i></label>
-    <input type="text" name="name" id="name" placeholder="Name" @bind-value="player.Name"/>
-    <label id="icon" for="password"><i class="fas fa-unlock-alt"></i></label>
-    <input type="password" name="password" id="password" placeholder="Password" @bind-value="player.Password"/>
+    <div class="said">
+        <h4>Welcome to blackjack</h4>
+        <label for="email"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Email</b></label>
+        <input type="text" placeholder="Enter Email"   name="email" required>
+       <p> </p> 
+       <label for="psw"><b>Password</b></label>
+        <input type="password" placeholder="Enter Password" name="psw" required>
+
+    </div>  
+    <div class= "Password">
+
+
+    </div>
+
+ 
+
+   
+   
     <hr>    
     <hr>
+    <p></p>
+
     <div class="btn-block">
         <button>Submit</button>
     </div>
