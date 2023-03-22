@@ -4,53 +4,64 @@ public class Dealer
 {
     public int DealerId { get; set; }
     public int Total { get; private set; }
-
     public Hand Hand { get; set; }
-
-    public Dealer()
-    {
-        Total = 0;
-        Hand = new Hand();
-    }
-
     public bool HasBusted { get; set; }
     public bool HasStuck { get; set; }
     public bool HasSplit { get; set; }
 
+    private readonly int StickMin;
+    
+    public Dealer()
+    {
+        Total = 0;
+        Hand = new Hand();
+        StickMin = 16;
+    }
+
     public void ReceiveCard(Card card)
     {
+        // Get the current hand total
         Total = Hand.Cards.Sum(card => card.Value);
+
+        // Add the new card value to the total
         Total += card.Value;
 
-        if (Total > 21)
+        // Has the dealer busted?
+        if (Total > Constants.BlackJackMax)
         {
-            HasBusted = true;
-
-            Hand.Cards.Add(card);
-
-            return;
+            // Busted!
+            HasBusted = true;            
         }
 
+        // Add the dealt card to the dealers hand
         Hand.Cards.Add(card);
     }
 
     public void PlayHand(Game game)
     {
-        while (true)
-        {
-            if (HasBusted || HasStuck)
-                break;
+        // Check if player has busted or stuck and exit function
+        if (HasBusted || HasStuck)
+            return;
 
-            if (IsHitting())
-                ReceiveCard(game.Deck.GetNextCard());
-            else
-                HasStuck = true;
+        // If player wants to hit
+        if (IsHitting())
+        {
+            // Draw card and add it to player's hand
+            ReceiveCard(game.Deck.GetNextCard());
+
+            // Recursively call PlayHand() to see if the player wants to hit again
+            PlayHand(game);
+        }
+        else // Player wants to stick
+        {
+            // Set HasStuck to true and exit function
+            HasStuck = true;
+            return;
         }
     }
 
     private bool IsHitting()
     {
-        return Total < 16;
+        return Total < StickMin;
     }
 }
-

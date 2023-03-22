@@ -13,6 +13,6 @@ public partial class UserDb : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // TESTING: Added default user
-        modelBuilder.Entity<User>().HasData(new User { UserId = 1, Email = "email@email.com", Name = "Jason", Password = "password", Balance = 100 });
+        modelBuilder.Entity<User>().HasData(new User { UserId = 1, Email = "email@email.com", Name = "Jason", HashedPassword = "password", Balance = 100 });
     }
 }
